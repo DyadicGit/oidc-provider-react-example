@@ -5,7 +5,8 @@
   "main": "express.js",
   "scripts": {
     "start": "node express.js",
-    "develop": "nodemon express.js"
+    "develop": "nodemon express.js",
+    "develop:inspect": "nodemon --inspect express.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +16,8 @@
     "lodash": "^4.17.15",
     "mongodb": "^3.5.7",
     "nanoid": "^3.1.9",
-    "oidc-provider": "^6.26.1"
+    "node-fetch": "^2.6.0",
+    "oidc-provider": "latest"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"

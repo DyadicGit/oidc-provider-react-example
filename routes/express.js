@@ -199,4 +199,52 @@ module.exports = (app, provider) => {
     }
     next(err);
   });
+  const fetch = require('node-fetch')
+  const { encode } = require('oidc-provider/lib/helpers/base64url')
+  const configuration = require('../support/configuration');
+  const clientId = configuration.clients[0].client_id
+  const clientSecret = configuration.clients[0].client_secret
+  const { URLSearchParams } = require('url');
+
+  const toBase64 = (str) => Buffer.from(str).toString('base64')
+  app.get('/callback', (req, res) => {
+    const { params, query } = req
+    res.json({ params, query })
+    // const redirectUri = 'http://localhost:3000/callback_from_client'
+    const redirectUri = 'http://localhost:3000/callback'
+    const body = new URLSearchParams();
+    body.append('grant_type', 'authorization_code');
+    body.append('code', query.code);
+    // body.append('client_id', clientId);
+    // body.append('client_secret', clientSecret);
+    body.append('redirect_uri', redirectUri);
+
+    const headersPost = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }
+    //      'Authorization': `Basic ${toBase64(query.code)}`
+    const headersBasic = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${new Buffer(`${clientId}:${clientSecret}`).toString('base64')}`
+    }
+
+    const tokenUri = `http://localhost:3000/token?client_id=${clientId}&grant_type=authorization_code&code=${query.code}&redirect_uri=${redirectUri}`
+    const tokenUriBasic = `http://localhost:3000/token`
+    const tokenUriGen = tokenUriBasic+'?'+body.toString()
+/*    fetch(tokenUriGen, { method: 'post', headers: headersBasic }).then(res => res.json())
+      .then(data => {
+      console.log(data)
+    }).catch(e => {
+      console.log(e)
+    })*/
+    fetch(tokenUriBasic, { method: 'post',headers: headersBasic, body }).then(res => res.json())
+      .then(data => {
+        console.log(data)
+      }).catch(e => {
+      console.log(e)
+    })
+  })
+  app.get('/callback_from_client', (req, res) => {
+    res.send('callback_from_client')
+  })
 };

@@ -31,6 +31,15 @@ let server;
   }
 
   const provider = new Provider(ISSUER, { adapter, ...configuration });
+/*  const { invalidate: orig } = provider.Client.Schema.prototype;
+
+  provider.Client.Schema.prototype.invalidate = function invalidate(message, code) {
+    if (code === 'implicit-force-https' || code === 'implicit-forbid-localhost') {
+      return;
+    }
+
+    orig.call(this, message);
+  };*/
 
   if (process.env.NODE_ENV === 'production') {
     app.enable('trust proxy');
