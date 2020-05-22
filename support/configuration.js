@@ -17,24 +17,15 @@ interactions.add(selectAccount, 0);
 /** @type Configuration */
 const configuration = {
   clients: [
-/*    {
-      client_id: 'test_app',
-      grant_types: ['implicit'],
-      response_types: ['id_token'],
-      redirect_uris: ['https://7c18a2b4-f5f9-4871-a7e1-1082b3e9e6e7.mock.pstmn.io/callback'],
-      token_endpoint_auth_method: 'none'
-    }*/
     {
       client_id: 'test_app',
       client_secret: 'super_secret',
-      grant_types: ['refresh_token', 'authorization_code' ],
+      grant_types: ['refresh_token', 'authorization_code'],
       redirect_uris: [
         'https://7c18a2b4-f5f9-4871-a7e1-1082b3e9e6e7.mock.pstmn.io/callback',
         'http://localhost:3000/callback',
-        'http://localhost:3000/callback_from_client'
       ],
       response_types: ["code"],
-      token_endpoint_auth_method: 'client_secret_post'
     }
   ],
   interactions: {
