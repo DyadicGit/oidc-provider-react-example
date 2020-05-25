@@ -25,7 +25,7 @@ const App = () => {
     for (const element of e.target.elements ) {
       if (element.type !== "submit") body[element.name] = element.value
     }
-    fetch(`http://localhost:3000/oidc/login/${uid}`,
+    fetch(`http://localhost:3000/oidc/login`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body) }
         ).then(
@@ -43,11 +43,13 @@ const App = () => {
       <button type="button" onClick={authenticate}>
         authenticate
       </button>
-      <form autoComplete="off" autoFocus="on" onSubmit={handleSubmit}>
-        <input required type="text" name="login" placeholder="Enter any login" />
-        <input required type="password" name="password" placeholder="and password" />
-        <button type="submit">Sign-in</button>
-      </form>
+      {uid && (
+        <form autoComplete="off" autoFocus="on" onSubmit={handleSubmit}>
+          <input required type="text" name="login" placeholder="Enter any login" />
+          <input required type="password" name="password" placeholder="and password" />
+          <button type="submit">Sign-in</button>
+        </form>
+      )}
     </main>
   )
 }

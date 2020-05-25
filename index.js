@@ -66,7 +66,7 @@ let server
   app.use('/', express.static('./views-react/dist/app/'))
   app.use('/login', express.static('./views-react/dist/login/'))
 
-  app.post('/oidc/login/:uid/', express.json(), async (req, res, next) => {
+  app.post('/oidc/login', express.json(), async (req, res, next) => {
     try {
       const { prompt: { name } } = await provider.interactionDetails(req, res)
       const account = await Account.findByLogin(req.body.login)
@@ -76,6 +76,7 @@ let server
       next(err)
     }
   })
+
   app.use('/oidc', provider.callback)
   server = app.listen(PORT, () => {
     console.log(`application is listening on port ${PORT}, check its http://localhost:${PORT}/.well-known/openid-configuration`)
