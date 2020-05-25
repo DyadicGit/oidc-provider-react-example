@@ -21,9 +21,14 @@ const App = () => {
   }
   const handleSubmit = e => {
     e.preventDefault()
-    fetch(`http://localhost:3000/my/${uid}/login`,
+    const body = {};
+    for (const element of e.target.elements ) {
+      if (element.type !== "submit") body[element.name] = element.value
+    }
+    fetch(`http://localhost:3000/oidc/login/${uid}`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ login: 'admin', password: 'admin' }) }).then(
+        body: JSON.stringify(body) }
+        ).then(
       r => {
         console.log(r)
         r.json().then(data => {

@@ -21,26 +21,13 @@ module.exports = (app, provider) => {
     try {
       const { uid, prompt, params, session } = await provider.interactionDetails(req, res)
 
-      const client = await provider.Client.find(params.client_id)
-
-      switch (prompt.name) {
-        case 'login': {
-          res.status(200).json({uid: uid})
-          break;
-        }
-        case 'consent': {
-          const result = {
-            consent: {
-              rejectedScopes: [],
-              rejectedClaims: [],
-              replace: false
-            }
-          }
-          await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true });
-          break;
-        }
-        default:
-          return undefined
+      if (prompt.name === 'login') {
+        res.status(200).json({uid: uid})
+        return ;
+      }
+      if (prompt.name === 'consent') {
+        const result = { consent: { rejectedScopes: [], rejectedClaims: [], replace: false } }
+        await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true });
       }
     } catch (err) {
       return next(err)
@@ -60,24 +47,6 @@ module.exports = (app, provider) => {
       }
 
       await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false })
-    } catch (err) {
-      next(err)
-    }
-  })
-
-  app.post('/interaction/:uid/confirm', setNoCache, body, async (req, res, next) => {
-    try {
-      const { prompt: { name } } = await provider.interactionDetails(req, res)
-      assert.equal(name, 'consent')
-
-      const result = {
-        consent: {
-          rejectedScopes: [],
-          rejectedClaims: [],
-          replace: false
-        }
-      }
-      await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true })
     } catch (err) {
       next(err)
     }
