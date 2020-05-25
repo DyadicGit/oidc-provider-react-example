@@ -2,6 +2,7 @@
 const { strict: assert } = require('assert')
 const querystring = require('querystring')
 const { inspect } = require('util')
+const fetch = require('node-fetch')
 
 const isEmpty = require('lodash/isEmpty')
 const { urlencoded } = require('express') // eslint-disable-line import/no-unresolved
@@ -100,6 +101,18 @@ module.exports = (app, provider) => {
           })
         }
         case 'consent': {
+          const removeConsentForm = true;
+          if (removeConsentForm) {
+            const result = {
+              consent: {
+                rejectedScopes: [],
+                rejectedClaims: [],
+                replace: false
+              }
+            }
+            await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true });
+            break;
+          }
           return res.render('interaction', {
             client,
             uid,
@@ -171,26 +184,17 @@ module.exports = (app, provider) => {
   app.post('/interaction/:uid/confirm', setNoCache, body, async (req, res, next) => {
     try {
       const {
-        prompt: { name, details }
+        prompt: { name }
       } = await provider.interactionDetails(req, res)
       assert.equal(name, 'consent')
 
-      const consent = {}
-
-      // any scopes you do not wish to grant go in here
-      //   otherwise details.scopes.new.concat(details.scopes.accepted) will be granted
-      consent.rejectedScopes = []
-
-      // any claims you do not wish to grant go in here
-      //   otherwise all claims mapped to granted scopes
-      //   and details.claims.new.concat(details.claims.accepted) will be granted
-      consent.rejectedClaims = []
-
-      // replace = false means previously rejected scopes and claims remain rejected
-      // changing this to true will remove those rejections in favour of just what you rejected above
-      consent.replace = false
-
-      const result = { consent }
+      const result = {
+        consent: {
+          rejectedScopes: [],
+          rejectedClaims: [],
+          replace: false
+        }
+      }
       await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: true })
     } catch (err) {
       next(err)
@@ -212,6 +216,7 @@ module.exports = (app, provider) => {
   app.use((err, req, res, next) => {
     if (err instanceof SessionNotFound) {
       // handle interaction expired / session not found error
+      console.log('interaction expired / session not found error')
     }
     next(err)
   })
@@ -225,7 +230,6 @@ module.exports = (app, provider) => {
     return Buffer.from(str).toString('base64')
   }
 
-  const fetch = require('node-fetch')
   const { encode, decode } = require('oidc-provider/lib/helpers/base64url')
   const configuration = require('../support/configuration')
   const clientId = configuration.clients[0].client_id
@@ -247,9 +251,7 @@ module.exports = (app, provider) => {
     fetch(`http://localhost:3000/token`, { method: 'post', headers: headersBasic, body })
       .then(res => res.json())
       .then(data => {
-        const accessToken = data.access_token
-        const jwt = decodeJwt(accessToken)
-
+        const jwt = decodeJwt(data.access_token)
         res.json({ ...data, jtw: jwt, expired: jwt.exp * 1000 < Date.now() })
       })
       .catch(e => {
