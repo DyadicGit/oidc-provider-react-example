@@ -2,11 +2,11 @@
   "name": "oidc-provider-example",
   "version": "1.0.0",
   "description": "See the following examples",
-  "main": "express.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node express.js",
-    "develop": "nodemon express.js",
-    "develop:inspect": "nodemon --inspect express.js"
+    "start": "node index.js",
+    "develop": "nodemon index.js",
+    "develop:inspect": "nodemon --inspect index.js"
   },
   "author": "",
   "license": "ISC",

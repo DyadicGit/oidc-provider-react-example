@@ -31,6 +31,7 @@ let server;
   }
 
   const provider = new Provider(ISSUER, { adapter, ...configuration });
+  // http dev mode
 /*  const { invalidate: orig } = provider.Client.Schema.prototype;
 
   provider.Client.Schema.prototype.invalidate = function invalidate(message, code) {

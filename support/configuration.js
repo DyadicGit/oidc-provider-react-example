@@ -83,5 +83,6 @@ const configuration = {
     DeviceCode: 10 * 60, // 10 minutes in seconds
     RefreshToken: 1 * 24 * 60 * 60, // 1 day in seconds
   },
+  formats: { AccessToken: 'jwt' }
 };
 module.exports =  configuration;

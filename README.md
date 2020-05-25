@@ -1,19 +1,10 @@
-# Examples
+# Example of authentication server
+> short info: openid-connect-provider in express.js that serves static files for interact endpoints
 
-See the following examples
+login
 
-- [Koa](/example/koa.js)
-  - the provider is a part of your Koa application
-- [Express](/example/express.js)
-  - the provider is a part of your express application
-- [Standalone](/example/standalone.js)
-  - the provider is completely standalone
+http://localhost:3000/auth?client_id=test_app&response_type=code&scope=openid%20email%20offline_access&redirect_uri=http://localhost:3000/callback
 
-Further resources
+login with refresh token
 
-- [Configuration](/docs/README.md)
-- [Mounting to a path](/docs/README.md#mounting-oidc-provider)
-
-Useful to know oidc-provider dependencies
-- [Koa](https://koajs.com/) - web framework oidc-provider uses internally
-- [jose](https://github.com/panva/jose) - everything JOSE
+http://localhost:3000/auth?client_id=test_app&response_type=code&scope=openid%20email%20offline_access&prompt=consent&redirect_uri=http://localhost:3000/callback
