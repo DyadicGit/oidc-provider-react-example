@@ -19,17 +19,21 @@ configuration.findAccount = Account.findAccount;
 const app = express();
 app.use(helmet());
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views-react/dist/login'));
 app.set('view engine', 'ejs');
 
 let server;
 (async () => {
   let adapter;
-  if (process.env.MONGODB_URI) {
+  if (process.env.DB_ON === 'ON' && process.env.MONGODB_URI) {
     adapter = require('./adapters/mongodb'); // eslint-disable-line global-require
     await adapter.connect();
   }
-
+  configuration.interactions = {
+    url(ctx, interaction) {
+      return `/interaction/${ctx.oidc.uid}`;
+    },
+  }
   const provider = new Provider(ISSUER, { adapter, ...configuration });
 
   // http dev mode
@@ -68,7 +72,26 @@ let server;
   }
 
   routes(app, provider);
-  app.use(provider.callback);
+  app.use('/', express.static('./views-react/dist/app/'))
+  app.use('/login', express.static('./views-react/dist/login/'))
+
+  app.post('/my/:uid/login', async (req, res, next) => {
+    try {
+      const { prompt: { name } } = await provider.interactionDetails(req, res)
+      const account = await Account.findByLogin(req.body.login)
+
+      const result = {
+        login: {
+          account: account.accountId
+        }
+      }
+
+      await provider.interactionFinished(req, res, result, { mergeWithLastSubmission: false })
+    } catch (err) {
+      next(err)
+    }
+  })
+  app.use('/oidc',provider.callback);
   server = app.listen(PORT, () => {
     console.log(`application is listening on port ${PORT}, check its http://localhost:${PORT}/.well-known/openid-configuration`);
   });

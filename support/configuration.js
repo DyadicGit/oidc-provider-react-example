@@ -1,17 +1,5 @@
 const { interactionPolicy: { Prompt, base: policy } } = require('oidc-provider'); // require('oidc-provider');
 
-// copies the default policy, already has login and consent prompt policies
-const interactions = policy();
-
-// create a requestable prompt with no implicit checks
-const selectAccount = new Prompt({
-  name: 'select_account',
-  requestable: true,
-});
-
-// add to index 0, order goes select_account > login > consent
-interactions.add(selectAccount, 0);
-
 /** @typedef {import('oidc-provider/types').Configuration} Configuration */
 
 /** @type Configuration */
@@ -22,18 +10,11 @@ const configuration = {
       client_secret: 'super_secret',
       grant_types: ['refresh_token', 'authorization_code'],
       redirect_uris: [
-        'https://7c18a2b4-f5f9-4871-a7e1-1082b3e9e6e7.mock.pstmn.io/callback',
         'http://localhost:3000/callback',
       ],
       response_types: ["code"],
     }
   ],
-  interactions: {
-    policy: interactions,
-    url(ctx, interaction) { // eslint-disable-line no-unused-vars
-      return `/interaction/${ctx.oidc.uid}`;
-    },
-  },
   cookies: {
     long: { signed: true, maxAge: (1 * 24 * 60 * 60) * 1000 }, // 1 day in ms
     short: { signed: true },
