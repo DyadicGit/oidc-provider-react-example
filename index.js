@@ -25,7 +25,7 @@ app.set('view engine', 'ejs');
 let server;
 (async () => {
   let adapter;
-  if (process.env.MONGODB_URI) {
+  if (process.env.DB === "ON" && process.env.MONGODB_URI) {
     adapter = require('./adapters/mongodb'); // eslint-disable-line global-require
     await adapter.connect();
   }
