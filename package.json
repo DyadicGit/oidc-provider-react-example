@@ -21,6 +21,7 @@
     "oidc-provider": "latest"
   },
   "devDependencies": {
+    "jose": "^1.27.0",
     "nodemon": "^2.0.4"
   },
   "nodemonConfig": {
