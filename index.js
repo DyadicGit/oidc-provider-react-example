@@ -4,7 +4,7 @@ const path = require('path')
 const url = require('url')
 
 const set = require('lodash/set')
-const express = require('express') // eslint-disable-line import/no-unresolved
+const express = require('express')
 const helmet = require('helmet')
 
 const { Provider } = require('oidc-provider')
@@ -19,11 +19,8 @@ configuration.findAccount = Account.findAccount
 const app = express()
 app.use(helmet())
 
-app.set('views', path.join(__dirname, 'views-react/dist/login'))
-app.set('view engine', 'ejs')
-
-let server
-;(async () => {
+let server;
+(async () => {
   let adapter
   if (process.env.DB_ON === 'ON' && process.env.MONGODB_URI) {
     adapter = require('./adapters/mongodb') // eslint-disable-line global-require
@@ -62,9 +59,9 @@ let server
     })
   }
 
-  routes(app, provider)
   app.use('/', express.static('./views-react/dist/app/'))
   app.use('/login', express.static('./views-react/dist/login/'))
+  routes(app, provider)
 
   app.post('/oidc/login', express.json(), async (req, res, next) => {
     try {

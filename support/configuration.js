@@ -16,7 +16,7 @@ const configuration = {
     }
   ],
   cookies: {
-    long: { signed: true, maxAge: (1 * 24 * 60 * 60) * 1000 }, // 1 day in ms
+    long: { signed: true, maxAge: (1 * 24 * 60 * 60) * 1000, path: '/' }, // 1 day in ms
     short: { signed: true, path: '/' },
     keys: ['some secret key', 'and also the old rotated away some time ago', 'and one more'],
   },
@@ -28,11 +28,10 @@ const configuration = {
       'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo'],
   },
   features: {
-    devInteractions: { enabled: false }, // defaults to true
-
-    deviceFlow: { enabled: true }, // defaults to false
-    introspection: { enabled: true }, // defaults to false
-    revocation: { enabled: true }, // defaults to false
+    devInteractions: { enabled: false },
+    deviceFlow: { enabled: false },
+    introspection: { enabled: true },
+    revocation: { enabled: true },
   },
   jwks: {
     keys: [

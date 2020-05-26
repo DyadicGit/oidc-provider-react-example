@@ -1,16 +1,9 @@
-const { strict: assert } = require('assert')
-const querystring = require('querystring')
-const { inspect } = require('util')
 const fetch = require('node-fetch')
-const { urlencoded } = require('express')
+const configuration = require('../support/configuration')
+const { URLSearchParams } = require('url')
 
-const Account = require('../support/account')
-
-const body = urlencoded({ extended: false })
 
 module.exports = (app, provider) => {
-  const { constructor: { errors: { SessionNotFound } } } = provider
-
   function setNoCache(req, res, next) {
     res.set('Pragma', 'no-cache')
     res.set('Cache-Control', 'no-cache, no-store')
@@ -19,7 +12,7 @@ module.exports = (app, provider) => {
 
   app.get('/interaction/:uid', setNoCache, async (req, res, next) => {
     try {
-      const { uid, prompt, params, session } = await provider.interactionDetails(req, res)
+      const { uid, prompt } = await provider.interactionDetails(req, res)
 
       if (prompt.name === 'login') {
         res.status(200).json({uid: uid})
@@ -43,10 +36,8 @@ module.exports = (app, provider) => {
     return Buffer.from(str).toString('base64')
   }
 
-  const configuration = require('../support/configuration')
   const clientId = configuration.clients[0].client_id
   const clientSecret = configuration.clients[0].client_secret
-  const { URLSearchParams } = require('url')
 
   app.get('/callback', (req, res) => {
     const { query } = req

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "develop": "nodemon index.js",
-    "develop:inspect": "nodemon --inspect index.js"
+    "develop:inspect": "nodemon --inspect index.js",
+    "watch:FE": "cd views-react && npm run watch"
   },
   "author": "",
   "license": "ISC",

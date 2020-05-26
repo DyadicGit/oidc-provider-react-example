@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 const loginWithRefresh = 'http://localhost:3000/oidc/auth?client_id=test_app&response_type=code&scope=openid%20email%20offline_access&prompt=consent&redirect_uri=http://localhost:3000/callback'
 
 const App = () => {
-  const [uid, setUid] = useState()
+  const [uid, setUid] = useState(sessionStorage.getItem('uid'))
   const authenticate = async () => {
     try {
       const response = await fetch(loginWithRefresh)
@@ -14,6 +14,7 @@ const App = () => {
         sessionStorage.setItem('uid', data.uid)
       } else {
         localStorage.setItem('token', JSON.stringify(data))
+        window.location.replace('/')
       }
     } catch (e) {
       console.log(e)
@@ -28,20 +29,17 @@ const App = () => {
     fetch(`http://localhost:3000/oidc/login`,
       { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body) }
-        ).then(
-      r => {
-        console.log(r)
-        r.json().then(data => {
-          console.log(data)
-        })
-      }
-    )
+        ).then(r => r.json())
+      .then(data => {
+        console.log(data)
+        window.location.replace('/')
+      })
   }
   return (
     <main>
       <div>Login page</div>
       <button type="button" onClick={authenticate}>
-        authenticate
+        Login
       </button>
       {uid && (
         <form autoComplete="off" autoFocus="on" onSubmit={handleSubmit}>
