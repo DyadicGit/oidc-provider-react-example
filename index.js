@@ -26,11 +26,6 @@ let server;
     adapter = require('./adapters/mongodb') // eslint-disable-line global-require
     await adapter.connect()
   }
-  configuration.interactions = {
-    async url(ctx, interaction) {
-      return `/interaction/${ctx.oidc.uid}`
-    }
-  }
   const provider = new Provider(ISSUER, { adapter, ...configuration })
 
   if (process.env.NODE_ENV === 'production') {
