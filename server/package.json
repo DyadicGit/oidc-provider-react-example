@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "nodemon index.ts",
+    "dev:windows": "nodemon --watch ./ --delay 1 --exec \"ts-node\" index.ts",
+    "dev": " nodemon --watch ./ --delay 1 --exec 'ts-node' index.ts",
+    "build-ts": "tsc",
+    "serve": "node dist/index.js",
+    "watch-node": "nodemon dist/index.js",
+    "watch-ts": "tsc -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "nodemon": "^2.0.4",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "nanoid": "^3.1.9",
+    "node-fetch": "^2.6.0",
+    "oidc-provider": "latest",
+    "jose": "^1.27.0",
+    "ts-node": "^8.10.2"
+  }
+}

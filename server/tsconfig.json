@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+//    "moduleResolution": "node",
+
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "sourceMap": true,
+
+    "resolveJsonModule": true,
+    "alwaysStrict": true,
+    "noImplicitAny": false,
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+
+    "typeRoots": ["./node_modules/@types"],
+    "lib": ["es6", "es2019", "es2020"]
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules"]
+}

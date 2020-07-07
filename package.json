@@ -1,36 +1,7 @@
 {
   "name": "oidc-provider-example",
   "version": "1.0.0",
-  "description": "See the following examples",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "develop": "nodemon index.js",
-    "develop:inspect": "nodemon --inspect index.js",
-    "watch:FE": "cd views-react && npm run watch"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.1",
-    "helmet": "^3.22.0",
-    "lodash": "^4.17.15",
-    "mongodb": "^3.5.7",
-    "nanoid": "^3.1.9",
-    "node-fetch": "^2.6.0",
-    "oidc-provider": "latest"
-  },
-  "devDependencies": {
-    "jose": "^1.27.0",
-    "nodemon": "^2.0.4"
-  },
-  "nodemonConfig": {
-    "restartable": "r",
-    "env": {
-      "NODE_ENV": "development",
-      "DB_ON": "OFF",
-      "MONGODB_URI": "mongodb://127.0.0.1:27017",
-      "_DEBUG": "*"
-    }
-  }
+  "description": "an oidc-provider usage example",
+  "author": "olgerd.seviakov@gmail.com",
+  "license": "ISC"
 }
