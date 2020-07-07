@@ -6,7 +6,7 @@ export interface User {
   email: string,
   password: string,
 }
-export type PostList = User[]
+export type UserList = User[]
 
 const add = (data: User) => {
   if (posts.has(data.id.toString())) {
@@ -17,7 +17,7 @@ const add = (data: User) => {
 const remove = (id) => posts.delete(id.toString())
 const set = (id, data: User) => posts.set(id.toString(), data)
 const get = (id): User => posts.get(id.toString())
-const all = (): PostList => Array.from(posts.values())
+const all = (): UserList => Array.from(posts.values())
 
 const init = async () => {
   const initPosts = await import('./db.json')

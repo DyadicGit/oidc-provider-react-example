@@ -1,7 +1,9 @@
-const { JWT, JWK } = require('jose');
-const { oidc } = require('../../../../config');
-const { findUserByEmail } = require('./account');
-const { decodeBase64String } = require('../../../../util/base64-utils');
+import { JWK, JWT } from "jose";
+import environment from "../environment";
+import { findUserByEmail } from "./account";
+
+const { oidc } = environment;
+const { decodeBase64String } = require('./base64-utils');
 
 const verifyJWT = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -14,9 +16,11 @@ const verifyJWT = async (req, res, next) => {
     req.user = { id: incognitoId, email: null, token: null };
     return next();
   }
+  // @ts-ignore
   const keystore = JWK.asKey(oidc.jwks_keys[0]);
   try {
     const decodedJWT = await JWT.verify(decodeBase64String(accessToken), keystore);
+    // @ts-ignore
     req.user = await findUserByEmail(decodedJWT.sub);
     return next();
   } catch (e) {
