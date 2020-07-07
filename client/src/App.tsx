@@ -1,10 +1,12 @@
-import React from 'react';
-import { UsersPage } from "./pages/users-page";
+import React from 'react'
+import { UsersPage } from './pages/users-page'
+import { LoginPage } from './pages/login'
 
-function App() {
-  return (
+const App = () => (
+  <>
     <UsersPage/>
-  );
-}
+    <LoginPage/>
+  </>
+);
 
-export default App;
+export default App
