@@ -5,15 +5,14 @@ const LoginPage = () => {
   const [showLogin, setShowLogin] = useState(false)
   const [status, setStatus] = useState()
   const [errorMessage, setErrorMessage] = useState()
+
   const setAuthState = (authResult) => {
     if (!authResult) {
       setErrorMessage('authenticate failure')
       return
     }
     const { status, message } = authResult
-    if (status === 'PROVIDE_CREDENTIALS') {
-      setShowLogin(true)
-    }
+    setShowLogin(status === 'PROVIDE_CREDENTIALS')
     setStatus(status)
     setErrorMessage(message)
   }
