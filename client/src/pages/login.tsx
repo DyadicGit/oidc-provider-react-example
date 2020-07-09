@@ -22,11 +22,11 @@ const LoginPage = () => {
   const submitLogin = (event) => {
     event.preventDefault()
     const form = new FormData(event.target).entries() as any
-    const data = { login: '', password: '' }
+    const data = { email: '', password: '' }
     for (const entry of form) {
       data[entry[0]] = entry[1]
     }
-    provideMeCredentials(data.login, data.password).then(authResult => {
+    provideMeCredentials(data.email, data.password).then(authResult => {
       if (!authResult) {
         setErrorMessage('authenticate failure')
         return
@@ -38,7 +38,7 @@ const LoginPage = () => {
   }
   return (
     <section>
-      <h2>{}</h2>
+      <p style={{color: 'red'}}>status: <b>{status}</b></p>
       {showLogin && (
         <>
           <h1>Login here</h1>

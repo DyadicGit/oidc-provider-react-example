@@ -14,6 +14,11 @@ const configuration: Configuration = {
       response_types: ['code'],
     },
   ],
+  interactions: {
+    url(ctx, interaction) {   // this is default, it's only good for debugging
+      return `/interaction/${ctx.oidc.uid}`;
+    },
+  },
   findAccount,
   logoutSource: async (ctx, form) => {
     const xsrf = form.match(/name="xsrf" value="\w+"/g)[0].replace('name="xsrf" value=', '').match(/\w+/)[0];

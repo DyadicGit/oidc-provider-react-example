@@ -2,7 +2,7 @@
 .idea
 package-lock.json
 **/dist
-
+client/build
 .env.*
 
 npm-debug.log*

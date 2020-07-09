@@ -21,10 +21,10 @@
   },
   "dependencies": {
     "express": "^4.17.1",
+    "jose": "^1.27.0",
     "nanoid": "^3.1.9",
     "node-fetch": "^2.6.0",
     "oidc-provider": "latest",
-    "jose": "^1.27.0",
     "ts-node": "^8.10.2"
   }
 }

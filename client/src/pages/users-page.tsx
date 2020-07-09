@@ -9,7 +9,7 @@ export interface User {
 
 export type UserList = User[]
 
-const apiGetAllUsers = async (): Promise<UserList> => (await (await fetch('http://localhost:3000/api/users')).json())
+const apiGetAllUsers = async (): Promise<UserList> => (await (await fetch('/api/users')).json())
 
 const UsersPage = () => {
   const [users, setUsers] = useState<UserList>([])

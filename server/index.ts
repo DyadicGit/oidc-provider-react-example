@@ -8,14 +8,18 @@ const app = express()
 const cacheHours = 24 * 60 * 60; // 24 hours
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Headers', '*');
   res.header('Access-Control-Allow-Methods', '*');
+  res.header('Access-Control-Allow-Credentials', 'true')
   res.header('Access-Control-Max-Age', `${cacheHours}`);
+  res.header('Access-Control-Expose-Headers', `*`);
+  res.header('Access-Control-Request-Headers', `*`);
+  res.header('Access-Control-Request-Method', `*`);
   next();
 });
-
-app.get('/', (req, res) => res.send('ok'))
 app.use('/api', userApi)
 app.use(oidcProvider)
+
+app.use('/',express.static('../client/build'))
 
 app.listen(environment.PORT, () => console.log(`listening on http://localhost:${environment.PORT}`))
