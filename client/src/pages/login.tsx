@@ -5,20 +5,23 @@ const LoginPage = () => {
   const [showLogin, setShowLogin] = useState(false)
   const [status, setStatus] = useState()
   const [errorMessage, setErrorMessage] = useState()
+  const setAuthState = (authResult) => {
+    if (!authResult) {
+      setErrorMessage('authenticate failure')
+      return
+    }
+    const { status, message } = authResult
+    if (status === 'PROVIDE_CREDENTIALS') {
+      setShowLogin(true)
+    }
+    setStatus(status)
+    setErrorMessage(message)
+  }
+
   useEffect(() => {
-    authenticate().then((authResult) => {
-      if (!authResult) {
-        setErrorMessage('authenticate failure')
-        return
-      }
-      const { status, message } = authResult
-      if (status === 'PROVIDE_CREDENTIALS') {
-        setShowLogin(true)
-      }
-      setStatus(status)
-      setErrorMessage(message)
-    })
+    authenticate().then(setAuthState)
   }, [])
+
   const submitLogin = (event) => {
     event.preventDefault()
     const form = new FormData(event.target).entries() as any
@@ -26,16 +29,9 @@ const LoginPage = () => {
     for (const entry of form) {
       data[entry[0]] = entry[1]
     }
-    provideMeCredentials(data.email, data.password).then(authResult => {
-      if (!authResult) {
-        setErrorMessage('authenticate failure')
-        return
-      }
-      const { status, message } = authResult
-      setStatus(status)
-      setErrorMessage(message)
-    })
+    provideMeCredentials(data.email, data.password).then(setAuthState)
   }
+
   return (
     <section>
       <p style={{color: 'red'}}>status: <b>{status}</b></p>

@@ -17,6 +17,7 @@ app.use((req, res, next) => {
   res.header('Access-Control-Request-Method', `*`);
   next();
 });
+
 app.use('/api', userApi)
 app.use(oidcProvider)
 
