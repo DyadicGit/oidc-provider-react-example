@@ -1,6 +1,6 @@
 import { Configuration } from 'oidc-provider/types';
-import environment from '../environment';
-const { oidc } = environment
+import config from '../config';
+const { oidc } = config
 
 const { findAccount } = require('./account');
 

@@ -1,8 +1,8 @@
 import { JWK, JWT } from "jose";
-import environment from "../environment";
+import config from "../environment";
 import { findUserByEmail } from "./account";
 
-const { oidc } = environment;
+const { oidc } = config;
 const { decodeBase64String } = require('./base64-utils');
 
 const verifyJWT = async (req, res, next) => {

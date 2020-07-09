@@ -1,6 +1,6 @@
 const PORT = 3000;
 
-const environment = {
+const config = {
   PORT: PORT,
   oidc: {
     provider_domain: `http://localhost:${PORT}`,
@@ -12,4 +12,4 @@ const environment = {
   }
 }
 
-export default environment;
+export default config;

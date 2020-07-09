@@ -3,11 +3,11 @@ import fetch from "node-fetch";
 import url, { URLSearchParams } from "url";
 // @ts-ignore
 import { Provider } from 'oidc-provider';
-import environment from '../environment';
+import config from '../config';
 import configuration from './configuration';
 import { findUserByEmail } from './account';
 
-const { oidc } = environment
+const { oidc } = config
 const DOMAIN_URL = oidc.provider_domain;
 const oidcApp = express();
 
