@@ -1,4 +1,4 @@
-let posts: Map<string, User> = new Map();
+let userDatabase: Map<string, User> = new Map();
 
 export interface User {
   id: number
@@ -9,19 +9,19 @@ export interface User {
 export type UserList = User[]
 
 const add = (data: User) => {
-  if (posts.has(data.id.toString())) {
+  if (userDatabase.has(data.id.toString())) {
     throw Error('already exists')
   }
-  posts.set(data.id.toString(), data)
+  userDatabase.set(data.id.toString(), data)
 }
-const remove = (id) => posts.delete(id.toString())
-const set = (id, data: User) => posts.set(id.toString(), data)
-const get = (id): User => posts.get(id.toString())
-const all = (): UserList => Array.from(posts.values())
+const remove = (id) => userDatabase.delete(id.toString())
+const set = (id, data: User) => userDatabase.set(id.toString(), data)
+const get = (id): User => userDatabase.get(id.toString())
+const all = (): UserList => Array.from(userDatabase.values())
 
 const init = async () => {
   const initPosts = await import('./db.json')
-  posts = new Map<string, User>(initPosts.posts.map(s => [s.id.toString(), s]))
+  userDatabase = new Map<string, User>(initPosts.users.map(s => [s.id.toString(), s]))
 }
 init()
 

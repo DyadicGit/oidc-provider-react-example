@@ -97,12 +97,11 @@ oidcApp.post('/oidc/login', express.json(), async (req, res, next) => {
   try {
     const user = await findUserByEmail(decodeURIComponent(login));
     if (!user) {
-      res.status(401).json({ error: 'Invalid email or password' });
+      res.status(401).json({ error: 'User does not exist' });
       return;
     }
 
-    const hashedPasswordInput = decodeURIComponent(password);
-    if (user.password.toString() !== hashedPasswordInput) {
+    if (user.password.toString() !== decodeURIComponent(password)) {
       res.status(401).json({ error: 'Invalid email or password' });
       return;
     }
@@ -137,15 +136,13 @@ oidcApp.get('/oidc/refresh', async (req, res, next) => {
   }
 });
 
-const introspectionApi = async (token) => {
-  const body = new URLSearchParams();
-  body.append('token', token);
-  return (await fetch(`${DOMAIN_URL}/oidc/token/introspection`, { method: 'post', headers, body: body.toString() })).json();
-};
-
 oidcApp.get('/oidc/validate', async (req, res, next) => {
   try {
-    const data = await introspectionApi(req.query.token);
+    const body = new URLSearchParams();
+    // @ts-ignore
+    body.append('token', req.query.token);
+    const data = await (await fetch(`${DOMAIN_URL}/oidc/token/introspection`, { method: 'post', headers, body: body.toString() })).json();
+
     if (data.error) { throw Error(JSON.stringify(data)); }
     res.json(data);
   } catch (e) {
@@ -173,4 +170,4 @@ oidcApp.use(baseEndpoint, provider.callback);
 
 console.log(`oidc-provider configuration at ${DOMAIN_URL}${baseEndpoint}/.well-known/openid-configuration`);
 
-export { oidcApp as oidcProvider, introspectionApi };
+export { oidcApp as oidcProvider };
