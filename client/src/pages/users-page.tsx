@@ -17,7 +17,7 @@ const UsersPage = () => {
     apiGetAllUsers().then(setUsers)
   }, [])
   return (
-    <main>
+    <section>
       <h1>Users page</h1>
       <ul>
         {users && users.map(user => (
@@ -28,7 +28,7 @@ const UsersPage = () => {
             pw: {user.password}
           </li>))}
       </ul>
-    </main>
+    </section>
 
   )
 }

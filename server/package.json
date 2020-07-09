@@ -5,8 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "nodemon index.ts",
-    "dev:windows": "nodemon --watch ./ --delay 1 --exec \"ts-node\" index.ts",
-    "dev": " nodemon --watch ./ --delay 1 --exec 'ts-node' index.ts",
+    "develop": " nodemon --watch ./ --delay 1 --exec 'ts-node' index.ts",
     "build-ts": "tsc",
     "serve": "node dist/index.js",
     "watch-node": "nodemon dist/index.js",

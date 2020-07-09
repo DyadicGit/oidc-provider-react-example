@@ -1,7 +1,9 @@
 // @ts-ignore
 import { v4 as uuidV4 } from 'uuid';
-
-const DOMAIN_URL = process.env.DOMAIN_URL || window.location.origin;
+import config from './config'
+const DOMAIN_URL = config.oidc.provider_domain;
+const CLIENT_ID = config.oidc.client_id
+const CALLBACK = config.oidc.callback
 
 enum HandledErrors {
   'TOKEN_REVOKED'= 'invalid_grant'
@@ -41,19 +43,9 @@ export interface AuthReturnType {
   status: Status
   message?: string
 }
-export type SharedLinks = string[]
 
 const storageToken = sessionStorage;
 const storageUser = localStorage;
-
-const generateNewIncognitoUser = () => {
-  const newIncognitoUser: UserInfoResponse = {
-    id: `incognito-${uuidV4()}`, email: null, token: null, sub: null,
-  };
-  // eslint-disable-next-line no-use-before-define
-  storage.storeUserDetails(newIncognitoUser);
-  return newIncognitoUser;
-};
 
 export const storage = {
   storeToken: (token: Token): void => storageToken.setItem('token', JSON.stringify(token)),
@@ -62,51 +54,26 @@ export const storage = {
     // @ts-ignore
     return JSON.parse(storageToken.getItem('token'));
   },
-  storeUserDetails: (user: UserInfoResponse) => storageUser.setItem('userDetails', JSON.stringify(user)),
-  removeUserDetails: (): void => storageUser.removeItem('userDetails'),
-  userDetails: (): UserInfoResponse | null => JSON.parse(storageUser.userDetails || null),
-  retrieveUserDetailsCached: async (): Promise<UserInfoResponse> => {
-    try {
-      const meCached = JSON.parse(storageUser.userDetails || null);
-
-      if (meCached) {
-        return Promise.resolve(meCached);
-      }
-
-      // eslint-disable-next-line no-use-before-define
-      const authUserInfo = await oidcApi.userInfo();
-      storage.storeUserDetails(authUserInfo);
-      return authUserInfo;
-    } catch (error) {
-      return generateNewIncognitoUser();
-    }
+  storeUser: (user: UserInfoResponse): UserInfoResponse => {
+    storageUser.setItem('user', JSON.stringify(user))
+    return user
   },
-  retrieveUserDetails: async (): Promise<UserInfoResponse> => {
-    try {
-      // eslint-disable-next-line no-use-before-define
-      const authUserInfo = await oidcApi.userInfo();
-      storage.storeUserDetails(authUserInfo);
-      return authUserInfo;
-    } catch (error) {
-      return generateNewIncognitoUser();
+  removeUser: (): void => storageUser.removeItem('user'),
+  retrieveUser: async (): Promise<UserInfoResponse> => {
+    const meCached = JSON.parse(storageUser.user || null);
+    const me = oidcApi.userInfo().then(storage.storeUser);
+
+    if (meCached) {
+      return Promise.resolve(meCached);
     }
-  },
-  storeLinks: (dashboardsIds: SharedLinks) => storageUser.setItem('links', JSON.stringify(dashboardsIds)),
-  removeLinks: () => storageUser.removeItem('links'),
-  retrieveLinks: (): SharedLinks | null => {
-    // @ts-ignore
-    return JSON.parse(storageUser.getItem('links'));
+    return me;
   },
   removeAll: () => {
     storage.removeToken();
-    storage.removeUserDetails();
-    storage.removeLinks();
+    storage.removeUser();
   },
 };
 
-export const isIncognito = (userDetails: UserInfoResponse | null) => {
-  return userDetails === null || userDetails.id.includes('incognito');
-};
 
 const isValid = async (accessOrRefreshToken: string):Promise<boolean> => {
   // eslint-disable-next-line no-use-before-define
@@ -132,7 +99,7 @@ export const provideMeCredentials = async (login: string, password: string, retr
       return { status: 'ERROR', message: error };
     } catch (e) {
       console.error('Authentication grant error');
-      return { status: 'ERROR', message: 'Instat is temporarily unavailable. Please try again later' };
+      return { status: 'ERROR', message: 'Backend is temporarily unavailable. Please try again later' };
     }
   }
   const token: Token = await resp.json();
@@ -142,11 +109,7 @@ export const provideMeCredentials = async (login: string, password: string, retr
 
 export const oidcApi = {
   grantCodeOrToken: async (): Promise<Token | UidResponse> => {
-    const loginWithRefresh = `${
-      DOMAIN_URL
-    }/oidc/auth?client_id=instat_io&response_type=code&scope=openid%20email%20offline_access%20app_profile&prompt=consent&redirect_uri=${
-      DOMAIN_URL
-    }/callback`;
+    const loginWithRefresh = `${DOMAIN_URL}/oidc/auth?client_id=${CLIENT_ID}&response_type=code&scope=openid%20email%20offline_access%20app_profile&prompt=consent&redirect_uri=${CALLBACK}`;
     const response = await fetch(loginWithRefresh);
     if (!response.ok) {
       try {
@@ -211,20 +174,20 @@ export const authenticate = async (token = storage.retrieveToken()): Promise<Aut
         return { status: 'PROVIDE_CREDENTIALS' };
       }
       storage.storeToken(data);
-      await storage.retrieveUserDetails();
+      await storage.retrieveUser();
       return { status: 'AUTHENTICATED' };
     }
 
     if (await isValid(token.access_token)) {
       storage.storeToken(token);
-      await storage.retrieveUserDetails();
+      await storage.retrieveUser();
       return { status: 'AUTHENTICATED' };
     }
 
     const newToken = await oidcApi.rotateToken(token);
     if (newToken) {
       storage.storeToken(newToken);
-      await storage.retrieveUserDetails();
+      await storage.retrieveUser();
       return { status: 'AUTHENTICATED' };
     }
     storage.removeAll();
