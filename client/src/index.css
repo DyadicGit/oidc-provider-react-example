@@ -14,5 +14,11 @@ code {
 main {
   padding: 20px 40px;
 }
+
 main button { padding: 10px; }
-main button + button { margin-left: 20px; }
+main button:first-of-type { display: block; }
+main button + button { margin-top: 20px; }
+
+main table { text-align: left; }
+main table td + td,
+main table th + th { padding-left: 20px }
