@@ -36,7 +36,8 @@ const LoginPage = () => {
 
   return (
     <section>
-      <p style={{color: 'red'}}>status: <b>{status}</b></p>
+      <p style={{color: 'blue'}}>status: <b>{status}</b></p>
+      <p hidden={!errorMessage} style={{color: 'red'}}>error: <b>{errorMessage}</b></p>
       {showLogin && (
         <>
           <h1>Login here</h1>

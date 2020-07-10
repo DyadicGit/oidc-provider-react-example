@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { logout, validateToken } from "../oidc-client";
 
-export interface User {
+interface User {
   id: number
   name: string
   email: string,
   password: string,
 }
 
-export type UserList = User[]
+type UserList = User[]
 
 const apiGetAllUsers = async (): Promise<UserList> => (await (await fetch('/api/users')).json())
 
-validateToken(() => console.log('logout!'))
+const redirectToLogin = () => {
+  if (window.location.pathname !== '/' && window.confirm('you are being logged-out!')) {
+    window.location.href = '/'
+  }
+}
+validateToken(redirectToLogin)
+
+const logoutAndRedirect = () => logout().then(redirectToLogin)
 
 const UsersPage = () => {
   const [users, setUsers] = useState<UserList>([])
@@ -21,7 +28,7 @@ const UsersPage = () => {
   }, [])
   return (
     <section>
-      <button type="button" onClick={logout}>Logout</button>
+      <button type="button" onClick={logoutAndRedirect}>Logout</button>
       <h1>Users page</h1>
       <ul>
         {users && users.map(user => (

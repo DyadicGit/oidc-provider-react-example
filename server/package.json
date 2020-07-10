@@ -5,9 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "start": "nodemon index.ts",
+    "start:production": "cd ../client && npm run build && cd ../server && npm run build-ts && node dist/index.js",
     "develop": " nodemon --watch ./ --delay 1 --exec 'ts-node' index.ts",
     "build-ts": "tsc",
-    "serve": "node dist/index.js",
     "watch-node": "nodemon dist/index.js",
     "watch-ts": "tsc -w"
   },

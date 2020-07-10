@@ -1,5 +1,5 @@
 import { JWK, JWT } from "jose";
-import config from "../environment";
+import config from "../server-config";
 import { findUserByEmail } from "./account";
 
 const { oidc } = config;

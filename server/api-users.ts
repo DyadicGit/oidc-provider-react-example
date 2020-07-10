@@ -1,5 +1,5 @@
 import express, { json } from 'express'
-import storage from '../db/storage'
+import storage from './db/storage'
 const userApi = express()
 
 userApi.get('/users', (req, res) => {
