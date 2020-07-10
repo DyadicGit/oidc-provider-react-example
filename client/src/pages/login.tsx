@@ -15,6 +15,9 @@ const LoginPage = () => {
     setShowLogin(status === 'PROVIDE_CREDENTIALS')
     setStatus(status)
     setErrorMessage(message)
+    if (status === 'AUTHENTICATED') {
+      setTimeout(() => window.location.href = '/app', 1000)
+    }
   }
 
   useEffect(() => {

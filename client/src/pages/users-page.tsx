@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { logout, validateToken } from "../oidc-client";
 
 export interface User {
   id: number
@@ -11,6 +12,8 @@ export type UserList = User[]
 
 const apiGetAllUsers = async (): Promise<UserList> => (await (await fetch('/api/users')).json())
 
+validateToken(() => console.log('logout!'))
+
 const UsersPage = () => {
   const [users, setUsers] = useState<UserList>([])
   useEffect(() => {
@@ -18,6 +21,7 @@ const UsersPage = () => {
   }, [])
   return (
     <section>
+      <button type="button" onClick={logout}>Logout</button>
       <h1>Users page</h1>
       <ul>
         {users && users.map(user => (
