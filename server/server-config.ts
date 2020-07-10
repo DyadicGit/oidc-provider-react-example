@@ -1,6 +1,6 @@
 const PORT = 3000;
 
-const config = {
+const serverConfig = {
   PORT: PORT,
   oidc: {
     provider_domain: `http://localhost:${PORT}`,
@@ -12,4 +12,4 @@ const config = {
   }
 }
 
-export default config;
+export default serverConfig;

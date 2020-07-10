@@ -1,6 +1,6 @@
 import express from 'express'
 import { userApi } from "./router/api-users";
-import config from './config'
+import serverConfig from './server-config';
 import { oidcProvider } from "./oidc-provider";
 const app = express()
 
@@ -23,4 +23,4 @@ app.use(oidcProvider)
 
 app.use('/',express.static('../client/build'))
 
-app.listen(config.PORT, () => console.log(`listening on http://localhost:${config.PORT}`))
+app.listen(serverConfig.PORT, () => console.log(`listening on http://localhost:${serverConfig.PORT}`))
