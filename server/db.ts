@@ -1,4 +1,4 @@
-{
+export const database = {
   "users": [
     {
       "id": 1,
