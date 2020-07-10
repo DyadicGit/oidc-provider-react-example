@@ -14,3 +14,5 @@ code {
 main {
   padding: 20px 40px;
 }
+main button { padding: 10px; }
+main button + button { margin-left: 20px; }

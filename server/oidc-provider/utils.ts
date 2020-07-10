@@ -1,6 +1,7 @@
 import { JWK, JWT } from "jose";
 import config from "../server-config";
 import { findUserByEmail } from "./account";
+import assert from "assert";
 
 const { oidc } = config;
 const { decodeBase64String } = require('./base64-utils');
@@ -11,21 +12,20 @@ const verifyJWT = async (req, res, next) => {
     return res.sendStatus(401);
   }
   const [type, accessToken] = authHeader.split(' ');
-  if (type === 'incognito') {
-    const incognitoId = decodeBase64String(accessToken);
-    req.user = { id: incognitoId, email: null, token: null };
-    return next();
-  }
+  assert(type === 'Bearer')
   // @ts-ignore
   const keystore = JWK.asKey(oidc.jwks_keys[0]);
   try {
-    const decodedJWT = await JWT.verify(decodeBase64String(accessToken), keystore);
-    // @ts-ignore
-    req.user = await findUserByEmail(decodedJWT.sub);
-    return next();
+    const decodedJWT: any = await JWT.verify(decodeBase64String(accessToken), keystore);
+    const user = findUserByEmail(decodedJWT.sub);
+    if (!user) {
+      res.status(401).send('user does not exist');
+    } else {
+      next();
+    }
   } catch (e) {
     return res.sendStatus(401);
   }
 };
 
-module.exports = { verifyJWT };
+export { verifyJWT };
